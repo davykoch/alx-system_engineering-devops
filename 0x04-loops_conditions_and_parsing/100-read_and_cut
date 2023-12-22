@@ -5,8 +5,7 @@
 # username
 # user id
 # Home directory path for the user
-IFS=":"
-while IFS=":" read -r username _ userid _ homedir _;
+while read -r passwd;
  do
-    echo "$username:$userid:$homedir"
+    echo "$passwd" | cut -d ':' -f1,3,6
 done < "/etc/passwd"
