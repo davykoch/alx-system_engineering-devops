@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Bash script to display a process tree and grep lines containing the word 'bash'
+
+# shellcheck disable=SC2009
+ps aux --forest | grep bash
