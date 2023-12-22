@@ -1,17 +1,4 @@
 #!/bin/bash
-
 # Bash script to display the PID and process name of processes containing the word 'bash'
 
-# Get the PID of the script
-script_pid=$$
-
-# Use pgrep to find PIDs of processes whose name contains the word 'bash'
-bash_pids=$(pgrep -f -l bash | awk '{print $1}')
-
-# Display PID and process name, excluding the script's own PID
-for pid in $bash_pids; do
-    if [ "$pid" != "$script_pid" ]; then
-        process_name=$(ps -p "$pid" -o comm= | tail -n 1)
-        echo "$pid $process_name"
-    fi
-done
+pgrep bash -l
