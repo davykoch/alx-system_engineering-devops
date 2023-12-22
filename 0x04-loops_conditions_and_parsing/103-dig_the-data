@@ -3,5 +3,4 @@
 
 log_file="apache-access.log"
 
-# Use awk to extract and format the information
-awk '{print $1 " " $9}' "$log_file" | sort | uniq -c | sort -nr | awk '{print $1, $2, $3}'
+awk '{print $1 " " $9}' "$log_file" | sort | uniq -c | sort -nr
