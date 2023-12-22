@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+ # Bash script that displays the content of the file /etc/passwd
+
+# script should only display:
+# username
+# user id
+# Home directory path for the user
+IFS=":"
+while IFS=":" read -r username _ userid _ homedir _;
+ do
+  echo "Username: $username"
+  echo "User ID: $userid"
+  echo "Home Directory: $homedir"
+  echo "----------------------"
+done < "/etc/passwd"
