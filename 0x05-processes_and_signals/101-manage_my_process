@@ -2,7 +2,7 @@
 # Manages the script manage_my_process.
 #   When passed the argument `start`:
 #     1. Starts manage_my_process
-#     2. Creates a file containings its PID in /var/run/my_process.pid
+#     2. Creates a file containing its PID in /var/run/my_process.pid
 #     3. Displays "manage_my_process started"
 #   When passed the argument `stop`:
 #     1. Stops manage_my_process
@@ -45,6 +45,12 @@ restart_process() {
   start_process
   echo "manage_my_process restarted"
 }
+
+# Check the number of arguments
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 {start|stop|restart}"
+  exit 1
+fi
 
 case "$1" in
   start)
