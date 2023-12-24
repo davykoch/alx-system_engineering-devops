@@ -22,14 +22,22 @@ pid_file="/var/run/my_process.pid"
 start_process() {
   ./manage_my_process &   # Start the process in the background
   echo $! > "$pid_file"  # Save the process ID to the PID file
+  sleep 1  # Allow some time for the process to start
   echo "manage_my_process started"
 }
 
 stop_process() {
-  kill -SIGTERM "$(cat "$pid_file")"  # Send SIGTERM to the process
-  wait "$(cat "$pid_file")"  # Wait for the process to finish
-  rm -f "$pid_file"  # Remove the PID file
-  echo "manage_my_process stopped"
+  local pid
+  pid=$(cat "$pid_file")  # Get the process ID from the PID file
+
+  if [ -n "$pid" ]; then
+    kill -SIGTERM "$pid"  # Send SIGTERM to the process
+    wait "$pid"  # Wait for the process to finish
+    rm -f "$pid_file"  # Remove the PID file
+    echo "manage_my_process stopped"
+  else
+    echo "No process found to stop"
+  fi
 }
 
 restart_process() {
