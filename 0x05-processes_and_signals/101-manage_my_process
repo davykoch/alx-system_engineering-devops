@@ -17,7 +17,6 @@
 #   If any other or no arguments are passed, displays
 #   "Usage: manage_my_process {start|stop|restart}"
 pid_file="/var/run/my_process.pid"
-log_file="/tmp/my_process"
 
 start_process() {
   ./manage_my_process &   # Start the process in the background
