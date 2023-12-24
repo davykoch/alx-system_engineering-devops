@@ -39,6 +39,7 @@ stop_process() {
     echo "manage_my_process stopped"
   else
     echo "manage_my_process is not running"
+    exit 1
   fi
 }
 
