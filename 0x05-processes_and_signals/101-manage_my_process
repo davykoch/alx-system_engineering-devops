@@ -2,7 +2,7 @@
 # Manages the script manage_my_process.
 #   When passed the argument `start`:
 #     1. Starts manage_my_process
-#     2. Creates a file containings its PID in /var/run/my_process.pid
+#     2. Creates a file containing its PID in /var/run/my_process.pid
 #     3. Displays "manage_my_process started"
 #   When passed the argument `stop`:
 #     1. Stops manage_my_process
@@ -28,10 +28,14 @@ start_process() {
 }
 
 stop_process() {
-  pkill -P "$(cat "$pid_file")"  # Send SIGTERM to the process group
-  wait "$(cat "$pid_file")"  # Wait for the process to finish
-  rm -f "$pid_file"  # Remove the PID file
-  echo "manage_my_process stopped"
+  if [ -e "$pid_file" ]; then
+    pkill -P "$(cat "$pid_file")"  # Send SIGTERM to the process group
+    wait "$(cat "$pid_file")"  # Wait for the process to finish
+    rm -f "$pid_file"  # Remove the PID file
+    echo "manage_my_process stopped"
+  else
+    echo "manage_my_process is not running"
+  fi
 }
 
 restart_process() {
