@@ -20,24 +20,16 @@
 pid_file="/var/run/my_process.pid"
 
 start_process() {
-  if [ -e "$pid_file" ]; then
-    echo "manage_my_process is already running."
-  else
-    ./manage_my_process &   # Start the process in the background
-    echo $! > "$pid_file"  # Save the process ID to the PID file
-    echo "manage_my_process started"
-  fi
+  ./manage_my_process &   # Start the process in the background
+  echo $! > "$pid_file"  # Save the process ID to the PID file
+  echo "manage_my_process started"
 }
 
 stop_process() {
-  if [ -e "$pid_file" ]; then
-    kill -SIGTERM "$(cat "$pid_file")"  # Send SIGTERM to the process
-    wait "$(cat "$pid_file")"  # Wait for the process to finish
-    rm -f "$pid_file"  # Remove the PID file
-    echo "manage_my_process stopped"
-  else
-    echo "manage_my_process is not running."
-  fi
+  kill -SIGTERM "$(cat "$pid_file")"  # Send SIGTERM to the process
+  wait "$(cat "$pid_file")"  # Wait for the process to finish
+  rm -f "$pid_file"  # Remove the PID file
+  echo "manage_my_process stopped"
 }
 
 restart_process() {
