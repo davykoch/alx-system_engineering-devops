@@ -15,20 +15,29 @@
 #     4. Creates a file containing its PID in /var/run/my_process.pid
 #     5. Displays "manage_my_process restarted"
 #   If any other or no arguments are passed, displays
-#   "Usage: manage_my_process {start|stop|restart}"
+#   "Usage: $0 {start|stop|restart}"
+
 pid_file="/var/run/my_process.pid"
 
 start_process() {
-  ./manage_my_process &   # Start the process in the background
-  echo $! > "$pid_file"  # Save the process ID to the PID file
-  echo "manage_my_process started"
+  if [ -e "$pid_file" ]; then
+    echo "manage_my_process is already running."
+  else
+    ./manage_my_process &   # Start the process in the background
+    echo $! > "$pid_file"  # Save the process ID to the PID file
+    echo "manage_my_process started"
+  fi
 }
 
 stop_process() {
-  kill -SIGTERM "$(cat "$pid_file")"  # Send SIGTERM to the process
-  wait "$(cat "$pid_file")"  # Wait for the process to finish
-  rm -f "$pid_file"  # Remove the PID file
-  echo "manage_my_process stopped"
+  if [ -e "$pid_file" ]; then
+    kill -SIGTERM "$(cat "$pid_file")"  # Send SIGTERM to the process
+    wait "$(cat "$pid_file")"  # Wait for the process to finish
+    rm -f "$pid_file"  # Remove the PID file
+    echo "manage_my_process stopped"
+  else
+    echo "manage_my_process is not running."
+  fi
 }
 
 restart_process() {
