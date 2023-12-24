@@ -2,7 +2,7 @@
 # Manages the script manage_my_process.
 #   When passed the argument `start`:
 #     1. Starts manage_my_process
-#     2. Creates a file containing its PID in /var/run/my_process.pid
+#     2. Creates a file containings its PID in /var/run/my_process.pid
 #     3. Displays "manage_my_process started"
 #   When passed the argument `stop`:
 #     1. Stops manage_my_process
@@ -15,9 +15,10 @@
 #     4. Creates a file containing its PID in /var/run/my_process.pid
 #     5. Displays "manage_my_process restarted"
 #   If any other or no arguments are passed, displays
-#   "Usage: $0 {start|stop|restart}"
+#   "Usage: manage_my_process {start|stop|restart}"
 
 pid_file="/var/run/my_process.pid"
+log_file="/tmp/my_process"
 
 start_process() {
   ./manage_my_process &   # Start the process in the background
@@ -27,8 +28,8 @@ start_process() {
 }
 
 stop_process() {
-  pkill -F "$pid_file"  # Send SIGTERM to the process using pkill
-  wait  # Wait for the process to finish
+  pkill -P "$(cat "$pid_file")"  # Send SIGTERM to the process group
+  wait "$(cat "$pid_file")"  # Wait for the process to finish
   rm -f "$pid_file"  # Remove the PID file
   echo "manage_my_process stopped"
 }
@@ -38,12 +39,6 @@ restart_process() {
   start_process
   echo "manage_my_process restarted"
 }
-
-# Check the number of arguments
-if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 {start|stop|restart}"
-  exit 1
-fi
 
 case "$1" in
   start)
