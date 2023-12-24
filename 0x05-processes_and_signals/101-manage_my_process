@@ -18,7 +18,6 @@
 #   "Usage: manage_my_process {start|stop|restart}"
 
 pid_file="/var/run/my_process.pid"
-log_file="/tmp/my_process"
 
 start_process() {
   if [ -e "$pid_file" ]; then
