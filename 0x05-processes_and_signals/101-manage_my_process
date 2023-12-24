@@ -9,7 +9,7 @@
 #     2. Deletes the file /var/run/my_process.pid
 #     3. Displays "manage_my_process stopped"
 #   When passed the argument `restart`:
-#     1. Stops manage_my_process
+#     1. Stops manage_my_process if running
 #     2. Deletes the file /var/run/my_process.pid
 #     3. Starts manage_my_process
 #     4. Creates a file containing its PID in /var/run/my_process.pid
@@ -21,24 +21,21 @@ pid_file="/var/run/my_process.pid"
 
 start_process() {
   if [ -e "$pid_file" ]; then
-    echo "manage_my_process is already running"
+    echo "manage_my_process is already running. Use 'restart' to restart it."
   else
-    ./manage_my_process &   # Start the process in the background
-    echo $! > "$pid_file"  # Save the process ID to the PID file
-    sleep 2  # Wait for the process to initialize
+    ./manage_my_process &
+    echo $! > "$pid_file"
     echo "manage_my_process started"
   fi
 }
 
 stop_process() {
   if [ -e "$pid_file" ]; then
-    pkill -P "$(cat "$pid_file")"  # Send SIGTERM to the process group
-    wait "$(cat "$pid_file")"  # Wait for the process to finish
-    rm -f "$pid_file"  # Remove the PID file
+    kill "$(cat "$pid_file")" && wait "$(cat "$pid_file")"
+    rm -f "$pid_file"
     echo "manage_my_process stopped"
   else
-    echo "manage_my_process is not running"
-    exit 1
+    echo "manage_my_process is not running."
   fi
 }
 
