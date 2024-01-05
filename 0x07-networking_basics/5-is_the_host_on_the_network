@@ -6,7 +6,7 @@
 
 # Check if an argument is provided
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 {IP_ADDRESS}"
+    echo "Usage: $(basename "$0") {IP_ADDRESS}"
     exit 1
 else
     # IP address passed as an argument
