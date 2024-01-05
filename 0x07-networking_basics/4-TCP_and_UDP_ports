@@ -9,8 +9,5 @@ ss -tln | awk
 # Display listening UDP ports
 ss -uln | awk 
 
-echo "Active UNIX domain sockets (only servers)"
-echo "Proto RefCnt Flags       Type       State         I-Node   PID/Program name    Path"
-
 # Display listening UNIX domain sockets
 ss -lx | awk 
