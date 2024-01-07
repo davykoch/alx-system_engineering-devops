@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 # Bash script that displays all active IPv4 IPs on the machine it’s executed on
 
-# Use ip to get network interface information and grep for IPv4 addresses
-ifconfig | grep -oE "\b(addr:)?([0-9]*\.){3}[0-9]*\b"
+# Use ifconfig to get network interface information and grep for IPv4 addresses
+ip -o -4 addr show | awk '{print $4}' | cut -d'/' -f1
