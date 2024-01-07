@@ -4,14 +4,6 @@
 # facebook.com resolves to 8.8.8.8.
 # The checker is running on Docker
 
-# Check if script is running in Docker
-if [ -f "/.dockerenv" ]; then
-    echo "Running in Docker"
-else
-    echo "This script is intended to run in a Docker environment."
-    exit 1
-fi
-
 # Backup the original /etc/hosts file
 cp /etc/hosts /etc/hosts_backup
 
@@ -20,5 +12,3 @@ sed -i 's/^127.0.0.1[[:space:]]*localhost/127.0.0.2\tlocalhost/' /etc/hosts
 
 # Update facebook.com entry to 8.8.8.8
 echo "8.8.8.8 facebook.com" >> /etc/hosts
-
-echo "Configuration completed. Please revert changes manually if needed."
