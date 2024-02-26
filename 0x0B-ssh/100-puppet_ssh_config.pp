@@ -1,7 +1,8 @@
 # 100-puppet_ssh_config.pp
 
 file { '/etc/ssh/ssh_config':
-  ensure => present,
+  ensure  => present,
+  content => "PasswordAuthentication no\nIdentityFile ~/.ssh/school\n",
 }
 
 augeas { 'Turn off passwd auth':
