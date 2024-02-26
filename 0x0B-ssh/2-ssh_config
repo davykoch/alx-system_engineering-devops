@@ -1,0 +1,5 @@
+# ~/.ssh/config
+
+Host 54.209.52.166
+  IdentityFile ~/.ssh/school
+  PasswordAuthentication no
