@@ -2,10 +2,14 @@
 
 file { '/etc/ssh/ssh_config':
   ensure  => present,
-  content => template('ssh_config.erb'),
 }
 
-file { '/etc/ssh/sshd_config':
-  ensure  => present,
-  content => template('sshd_config.erb'),
+augeas { 'Turn off passwd auth':
+  context => '/files/etc/ssh/ssh_config',
+  changes => 'set PasswordAuthentication no',
+}
+
+augeas { 'Declare identity file':
+  context => '/files/etc/ssh/ssh_config',
+  changes => 'set IdentityFile ~/.ssh/school',
 }
