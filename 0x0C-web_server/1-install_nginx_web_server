@@ -20,7 +20,6 @@ nginx -g "daemon off;" &
 # Wait for Nginx to start
 sleep 2
 
-# Test Nginx by querying the root with curl
 response=$(curl -s http://localhost)
 
 if [[ "$response" == *"Hello World!"* ]]; then
@@ -28,3 +27,5 @@ if [[ "$response" == *"Hello World!"* ]]; then
 else
     echo "Error: Nginx installation or configuration failed. Test did not pass."
 fi
+
+nginx -s reload
