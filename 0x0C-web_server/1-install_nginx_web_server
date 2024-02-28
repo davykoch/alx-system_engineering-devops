@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Bash script to install and configure Nginx web server
+
+apt-get update
+apt-get install -y nginx
+
+echo "<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+</body>
+</html>" > /usr/share/nginx/html/index.html
+
+# Start Nginx on port 80
+nginx -g "daemon off;" &
+
+# Wait for Nginx to start
+sleep 2
+
+# Test Nginx by querying the root with curl
+response=$(curl -s http://localhost)
+
+if [[ "$response" == *"Hello World!"* ]]; then
+    echo "Nginx installed and configured successfully. Test passed!"
+else
+    echo "Error: Nginx installation or configuration failed. Test did not pass."
+fi
