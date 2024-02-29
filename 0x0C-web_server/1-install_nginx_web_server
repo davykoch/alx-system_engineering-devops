@@ -4,6 +4,34 @@
 apt-get update
 apt-get install -y nginx
 
-sudo ufw allow 'Nginx HTTP'
-echo "Hello World!" > /var/www/html/index.html
-sudo service nginx start
+echo "<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+</body>
+</html>" > /usr/share/nginx/html/index.html
+
+echo "server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}" > /etc/nginx/sites-available/default
+
+nginx -g "daemon off;" &
+
+sleep 2
+
+response=$(curl -s http://localhost)
+
+if [[ "$response" == *"Hello World!"* ]]; then
+    echo "Nginx installed and configured successfully. Test passed!"
+else
+    echo "Error: Nginx installation or configuration failed. Test did not pass."
+fi
