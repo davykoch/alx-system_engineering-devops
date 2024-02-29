@@ -14,10 +14,18 @@ echo "<!DOCTYPE html>
 </body>
 </html>" > /usr/share/nginx/html/index.html
 
-# Start Nginx on port 80
+echo "server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}" > /etc/nginx/sites-available/default
+
 nginx -g "daemon off;" &
 
-# Wait for Nginx to start
 sleep 2
 
 response=$(curl -s http://localhost)
@@ -27,5 +35,3 @@ if [[ "$response" == *"Hello World!"* ]]; then
 else
     echo "Error: Nginx installation or configuration failed. Test did not pass."
 fi
-
-nginx -s reload
