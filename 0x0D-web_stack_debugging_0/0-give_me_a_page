@@ -1,16 +1,7 @@
 #!/bin/bash
-# Commands to fix the issue in the Docker container
+# Commands to fix Apache port binding issue
 
-docker exec -it <container_id_or_name> /bin/bash
-# Check Apache configuration
-cat /etc/apache2/apache2.conf
-ls /etc/apache2/sites-available/
-
-# Check Apache error logs
-cat /var/log/apache2/error.log
-
-# Restart Apache service
-service apache2 restart
-
-# Exit the container
-exit
+cat /etc/apache2/envvars
+sudo chown -R www-data:www-data /var/www/
+sudo service apache2 restart
+sudo service apache2 status
