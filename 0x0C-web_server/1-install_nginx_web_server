@@ -4,5 +4,30 @@
 sudo apt-get update
 sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
-echo "Hello World!" > /var/www/html/index.html
+echo '<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+</body>
+</html>' | sudo tee /var/www/html/index.html
 sudo service nginx start
+
+# Check if Nginx is installed
+if [ -x "$(command -v nginx)" ]; then
+    echo "Nginx is installed."
+else
+    echo "Error: Nginx installation failed."
+    exit 1
+fi
+
+response=$(curl -s http://localhost)
+
+if [[ "$response" == *"Hello World!"* ]]; then
+    echo "Nginx installed and configured successfully. Test passed!"
+else
+    echo "Error: Nginx installation or configuration failed. Test did not pass."
+    exit 1
+fi
