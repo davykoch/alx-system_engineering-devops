@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Bash script to configure Nginx redirection
+
+# Install Nginx (if not already installed)
+sudo apt-get update
+sudo apt-get -y install nginx
+
+# Create a custom configuration file for the redirection
+echo "location /redirect_me {" | sudo tee /etc/nginx/sites-available/redirect_me
+echo "    return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;" | sudo tee -a /etc/nginx/sites-available/redirect_me
+echo "}" | sudo tee -a /etc/nginx/sites-available/redirect_me
+
+# Create a symbolic link to enable the site
+sudo ln -s /etc/nginx/sites-available/redirect_me /etc/nginx/sites-enabled/
+
+# Remove default configuration (if needed)
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Restart Nginx to apply changes
+sudo service nginx restart
