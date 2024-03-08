@@ -1,20 +1,30 @@
 #!/usr/bin/env bash
-# Bash script to configure Nginx redirection
+# Script that configures nginx server to redirect to another server
+
+# Update package list
+sudo apt-get update
 
 # Install Nginx (if not already installed)
-sudo apt-get update
-sudo apt-get -y install nginx
+sudo apt-get install -y nginx
 
-# Create a custom configuration file for the redirection
-echo "location /redirect_me {" | sudo tee /etc/nginx/sites-available/redirect_me
-echo "    return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;" | sudo tee -a /etc/nginx/sites-available/redirect_me
-echo "}" | sudo tee -a /etc/nginx/sites-available/redirect_me
+# Create a simple "Hello World!" HTML page
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-# Create a symbolic link to enable the site
-sudo ln -s /etc/nginx/sites-available/redirect_me /etc/nginx/sites-enabled/
+# Check if the Nginx configuration file is at /etc/nginx/sites-available/default
+nginx_config_file="/etc/nginx/sites-available/default"
+if [ -f "$nginx_config_file" ]; then
+    # Configure Nginx to redirect
+    string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/davykoch permanent;"
+    sudo sed -i "s/server_name _;/$string_for_replacement/" "$nginx_config_file"
 
-# Remove default configuration (if needed)
-sudo rm -f /etc/nginx/sites-enabled/default
+    # Create a symbolic link to enable the site
+    sudo ln -s "$nginx_config_file" "/etc/nginx/sites-enabled/"
 
-# Restart Nginx to apply changes
-sudo service nginx restart
+    # Remove default configuration (if needed)
+    sudo rm -f /etc/nginx/sites-enabled/default
+
+    # Restart Nginx using the service command
+    sudo service nginx restart
+else
+    echo "Nginx configuration file not found at $nginx_config_file"
+fi
