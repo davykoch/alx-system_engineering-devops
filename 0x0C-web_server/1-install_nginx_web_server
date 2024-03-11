@@ -1,28 +1,8 @@
 #!/usr/bin/env bash
-# Description: Install and start Nginx web server.
+# Bash script to install and configure Nginx web server
 
-# Update package list
 sudo apt-get update
-
-# Install Nginx
 sudo apt-get -y install nginx
-
-# Allow Nginx HTTP traffic
 sudo ufw allow 'Nginx HTTP'
-
-# Create a simple index.html file
 echo "Hello World!" | sudo tee /var/www/html/index.html
-
-# Allow traffic on port 80
-sudo ufw allow 80
-
-# Start Nginx without using systemctl
 sudo service nginx start
-
-# Verify Nginx is running
-nginx_pid=$(ps aux | grep '[n]ginx' | awk '{print $2}')
-if [ -n "$nginx_pid" ]; then
-    echo "Nginx is running."
-else
-    echo "Nginx is not running."
-fi
