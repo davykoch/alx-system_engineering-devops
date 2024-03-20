@@ -33,11 +33,11 @@ defaults
   timeout server 15s
   timeout http-request 10s
 
-frontend clickviral-tech-frontend
+frontend daviscodecraft-tech-frontend
     bind *:80
-    default_backend clickviral-tech-backend
+    default_backend daviscodecraft-tech-backend
 
-backend clickviral-tech-backend
+backend daviscodecraft-tech-backend
     balance roundrobin
     server 473936-web-01 54.209.52.166:80 check
     server 473936-web-02 3.89.155.162:80 check
