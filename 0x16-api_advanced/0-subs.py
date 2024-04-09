@@ -10,29 +10,28 @@ from sys import argv
 
 
 def number_of_subscribers(subreddit):
-    '''
-    Returns the number of subscribers for a given subreddit.
-    '''
-
-    user_agent = {'User-Agent': 'Lizzie'}
-
     url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    response = requests.get(url, headers=user_agent)
+    headers = {
+                "User-Agent": (
+                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                 "AppleWebKit/537.36 (KHTML, like Gecko) "
+                 "Chrome/58.0.3029.110 Safari/537.3"
+                             )
+              }
+
+    response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        try:
-            data = response.json()
-            subscribers = data.get('data').get('subscribers')
-            return subscribers
-        except Exception:
-            return 0
+        data = response.json()
+        subscribers = data["data"]["subscribers"]
+        return subscribers
     else:
         return 0
 
 
 if __name__ == "__main__":
-    if len(argv) < 2:
+    if len(sys.argv) < 2:
         print("Please pass an argument for the subreddit to search.")
     else:
-        subreddit = argv[1]
+        subreddit = sys.argv[1]
         print(number_of_subscribers(subreddit))
