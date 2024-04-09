@@ -1,77 +1,50 @@
 #!/usr/bin/python3
-"""
-Queries the Reddit API recursively, parses the title of all hot articles,
-and prints a sorted count of given keywords.
-"""
+""" Module for a function that queries the Reddit API recursively."""
+
 
 import requests
 
 
-def count_words(subreddit, word_list, after=None, counts=None):
+def count_words(subreddit, word_list, after='', word_dict={}):
+    """ A function that queries the Reddit API parses the title of
+    all hot articles, and prints a sorted count of given keywords
+    (case-insensitive, delimited by spaces.
+    Javascript should count as javascript, but java should not).
+    If no posts match or the subreddit is invalid, it prints nothing.
     """
-    Recursively queries the Reddit API, parses the title of all hot articles,
-    and prints a sorted count of given keywords.
 
-    Args:
-        subreddit (str): The name of the subreddit to query.
-        word_list (list): A list of keywords to count occurrences
-        in the titles.
-        after (str): A token indicating the starting point for the
-        next page of
-        results. Default is None.
-        counts (dict): A dictionary to store counts of keywords.
-        Default is None.
+    if not word_dict:
+        for word in word_list:
+            if word.lower() not in word_dict:
+                word_dict[word.lower()] = 0
 
-    Returns:
-        None
-    """
-    if counts is None:
-        counts = {}
+    if after is None:
+        wordict = sorted(word_dict.items(), key=lambda x: (-x[1], x[0]))
+        for word in wordict:
+            if word[1]:
+                print('{}: {}'.format(word[0], word[1]))
+        return None
 
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?" \
-          f"limit=100&after={after}"
+    url = 'https://www.reddit.com/r/{}/hot/.json'.format(subreddit)
+    header = {'user-agent': 'redquery'}
+    parameters = {'limit': 100, 'after': after}
+    response = requests.get(url, headers=header, params=parameters,
+                            allow_redirects=False)
 
-    headers = {
-                "User-Agent": (
-                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                 "AppleWebKit/537.36 (KHTML, like Gecko) "
-                 "Chrome/58.0.3029.110 Safari/537.3"
-                             )
-              }
+    if response.status_code != 200:
+        return None
 
-    response = requests.get(url, headers=headers)
+    try:
+        hot = response.json()['data']['children']
+        aft = response.json()['data']['after']
+        for post in hot:
+            title = post['data']['title']
+            lower = [word.lower() for word in title.split(' ')]
 
-    if response.status_code == 200:
-        data = response.json()
-        posts = data["data"]["children"]
+            for word in word_dict.keys():
+                word_dict[word] += lower.count(word)
 
-        if not posts:
-            sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))
-            for word, count in sorted_counts:
-                print(f"{word}: {count}")
-            return
+    except Exception:
+        return None
 
-        for post in posts:
-            title = post["data"]["title"].lower()
-            for word in word_list:
-                if title.count(word.lower()) > 0:
-                    counts[word.lower()] = counts.get(word.lower(), 0) + \
-                        title.count(word.lower())
-
-        after = data["data"]["after"]
-        count_words(subreddit, word_list, after, counts)
-    else:
-        print("None")
-
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) < 3:
-        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
-        print("Ex: {} programming 'python java javascript'"
-              .format(sys.argv[0]))
-    else:
-        subreddit = sys.argv[1]
-        word_list = sys.argv[2].split()
-        count_words(subreddit, word_list)
+    count_words(subreddit, word_list, aft, word_dict)
