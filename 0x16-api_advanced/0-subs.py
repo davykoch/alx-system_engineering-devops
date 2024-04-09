@@ -6,6 +6,7 @@ If an invalid subreddit is given, the function returns 0.
 """
 
 import requests
+import sys
 
 
 def number_of_subscribers(subreddit):
@@ -29,7 +30,6 @@ def number_of_subscribers(subreddit):
 
 
 if __name__ == "__main__":
-    import sys
     if len(sys.argv) < 2:
         print("Please pass an argument for the subreddit to search.")
     else:
