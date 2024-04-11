@@ -1,41 +1,29 @@
 #!/usr/bin/python3
-"""
-Queries the Reddit API and returns the number of subscribers
-for a given subreddit.
-If an invalid subreddit is given, the function returns 0.
-"""
+"""Queries the Reddit API and returns the number
+of subscribers for a given subreddit."""
 
 import requests
-import sys
+from sys import argv
 
 
 def number_of_subscribers(subreddit):
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/58.0.3029.110 Safari/537.3"
-        )
-    }
-
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
+    """Returns the number of subscribers for a given subreddit."""
+    headers = {'User-Agent': 'YourCustomUserAgent/1.0'}
+    url = 'https://www.reddit.com/r/{}/about.json'.format(subreddit)
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
         data = response.json()
-        subscribers = data["data"]["subscribers"]
-        return subscribers
-    else:
+        return data.get('data', {}).get('subscribers', 0)
+    except requests.exceptions.HTTPError:
+        return 0
+    except Exception:
         return 0
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(argv) < 2:
         print("Please pass an argument for the subreddit to search.")
     else:
-        subreddit = sys.argv[1]
-        subscribers = number_of_subscribers(subreddit)
-        if subscribers == 0:
-            print("OK")
-        else:
-            print(subscribers)
+        subscribers = number_of_subscribers(argv[1])
+        print(subscribers)
