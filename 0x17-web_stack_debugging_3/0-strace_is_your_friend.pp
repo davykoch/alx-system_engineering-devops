@@ -1,7 +1,17 @@
-# Puppet manifest to fix Apache 500 error by setting correct permissions on the document root directory
+# Puppet manifest to fix Apache 500 error by correcting a misconfigured PHP module
 
-exec { 'fix-apache-permissions':
-  command => '/bin/chown -R www-data:www-data /var/www/html',
-  path    => ['/bin', '/usr/bin'],
-  unless  => '/bin/stat -c "%U:%G" /var/www/html | /bin/grep www-data:www-data',
+package { 'php':
+  ensure => 'installed',
+}
+
+file { '/etc/apache2/mods-available/php7.0.conf':
+  ensure  => 'file',
+  content => '# This file is intentionally left blank',
+  notify  => Service['apache2'],
+}
+
+service { 'apache2':
+  ensure  => 'running',
+  enable  => true,
+  require => Package['php'],
 }
