@@ -6,18 +6,18 @@ If an invalid subreddit is given, the function returns 0.
 """
 
 import requests
-from sys import argv
+import sys
 
 
 def number_of_subscribers(subreddit):
     url = f"https://www.reddit.com/r/{subreddit}/about.json"
     headers = {
-                "User-Agent": (
-                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                 "AppleWebKit/537.36 (KHTML, like Gecko) "
-                 "Chrome/58.0.3029.110 Safari/537.3"
-                             )
-              }
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/58.0.3029.110 Safari/537.3"
+        )
+    }
 
     response = requests.get(url, headers=headers)
 
@@ -34,4 +34,8 @@ if __name__ == "__main__":
         print("Please pass an argument for the subreddit to search.")
     else:
         subreddit = sys.argv[1]
-        print(number_of_subscribers(subreddit))
+        subscribers = number_of_subscribers(subreddit)
+        if subscribers == 0:
+            print("OK")
+        else:
+            print(subscribers)
