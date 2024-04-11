@@ -8,7 +8,7 @@ from sys import argv
 
 def number_of_subscribers(subreddit):
     """Returns the number of subscribers for a given subreddit."""
-    headers = {'User-Agent': 'koechdavis24@gmail.com'}
+    headers = {'User-Agent': 'codergirl'}
     url = requests.get('https://www.reddit.com/r/{}/about.json'
                        .format(subreddit), headers=headers).json()
     try:
